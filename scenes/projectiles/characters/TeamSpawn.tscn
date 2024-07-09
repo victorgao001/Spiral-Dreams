@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=3 uid="uid://cjc21nxdj72wx"]
+
+[ext_resource type="Script" path="res://scenes/projectiles/characters/TeamSpawn.gd" id="1_nw4qk"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8qvnm"]
+radius = 99.0808
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_mgwfn"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+
+[node name="TeamSpawn" type="Area2D" groups=["character"]]
+collision_mask = 3
+script = ExtResource("1_nw4qk")
+maxHealth = 1000
+metadata/_edit_group_ = true
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_8qvnm")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_mgwfn")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

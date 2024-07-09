@@ -1,0 +1,356 @@
+[gd_scene load_steps=10 format=3 uid="uid://c8ywjgngxjsip"]
+
+[ext_resource type="Script" path="res://scenes/projectiles/characters/Player.gd" id="1_gecry"]
+[ext_resource type="Texture2D" uid="uid://p4n7816y6ti2" path="res://art/playerGrey_up1.png" id="2_g2tch"]
+[ext_resource type="Texture2D" uid="uid://70s825mu4hcm" path="res://art/playerGrey_up2.png" id="3_1o4rx"]
+[ext_resource type="Texture2D" uid="uid://2hv86o4ir7l8" path="res://art/playerGrey_walk1.png" id="4_p0pyu"]
+[ext_resource type="Texture2D" uid="uid://bpj53fa3exf3u" path="res://art/playerGrey_walk2.png" id="5_r5cvp"]
+[ext_resource type="PackedScene" uid="uid://qjrifqoruxpn" path="res://scenes/inventory.tscn" id="6_0csd6"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_mgwfn"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+properties/1/path = NodePath(".:maxHealth")
+properties/1/spawn = true
+properties/1/sync = true
+properties/1/watch = false
+properties/2/path = NodePath(".:health")
+properties/2/spawn = true
+properties/2/sync = true
+properties/2/watch = false
+properties/3/path = NodePath(".:maxEnergy")
+properties/3/spawn = true
+properties/3/sync = true
+properties/3/watch = false
+properties/4/path = NodePath(".:energy")
+properties/4/spawn = true
+properties/4/sync = true
+properties/4/watch = false
+properties/5/path = NodePath(".:score")
+properties/5/spawn = true
+properties/5/sync = true
+properties/5/watch = false
+properties/6/path = NodePath(".:id")
+properties/6/spawn = true
+properties/6/sync = true
+properties/6/watch = false
+properties/7/path = NodePath(".:spectator")
+properties/7/spawn = true
+properties/7/sync = true
+properties/7/watch = false
+properties/8/path = NodePath(".:username")
+properties/8/spawn = true
+properties/8/sync = true
+properties/8/watch = false
+properties/9/path = NodePath(".:team")
+properties/9/spawn = true
+properties/9/sync = true
+properties/9/watch = false
+properties/10/path = NodePath(".:zoomEnabled")
+properties/10/spawn = true
+properties/10/sync = true
+properties/10/watch = false
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6vtl0"]
+radius = 27.0
+height = 58.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_e8tpw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_g2tch")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_1o4rx")
+}],
+"loop": true,
+"name": &"up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_p0pyu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_r5cvp")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[node name="Player" type="Area2D" groups=["character", "player"]]
+collision_layer = 3
+collision_mask = 17
+script = ExtResource("1_gecry")
+score = 0
+maxHealth = 60
+baseAcceleration = 2000
+baseSpeed = 200
+metadata/_edit_group_ = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_mgwfn")
+
+[node name="Nametag" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -24.5
+offset_top = -60.0
+offset_right = 24.5
+offset_bottom = -34.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/line_spacing = 0
+text = "Player
+"
+horizontal_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("CapsuleShape2D_6vtl0")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_e8tpw")
+animation = &"up"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TopLeftUi" type="BoxContainer" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+vertical = true
+
+[node name="HealthBar" type="ProgressBar" parent="CanvasLayer/TopLeftUi"]
+custom_minimum_size = Vector2(140, 25)
+layout_mode = 2
+show_percentage = false
+
+[node name="Label" type="Label" parent="CanvasLayer/TopLeftUi/HealthBar"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Health"
+
+[node name="EnergyBar" type="ProgressBar" parent="CanvasLayer/TopLeftUi"]
+custom_minimum_size = Vector2(140, 25)
+layout_mode = 2
+show_percentage = false
+
+[node name="Label" type="Label" parent="CanvasLayer/TopLeftUi/EnergyBar"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Energy"
+
+[node name="Scores" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="ScoreDisplay" type="ColorRect" parent="CanvasLayer/Scores"]
+custom_minimum_size = Vector2(80, 25)
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="CanvasLayer/Scores/ScoreDisplay"]
+layout_mode = 0
+offset_left = 5.0
+offset_right = 48.0
+offset_bottom = 26.0
+text = "Score
+"
+
+[node name="Panel" type="Panel" parent="CanvasLayer/Scores"]
+custom_minimum_size = Vector2(80, 25)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Scores/Panel"]
+layout_mode = 0
+offset_right = 160.0
+offset_bottom = 23.0
+scale = Vector2(0.5, 0.5)
+autowrap_mode = 2
+
+[node name="TeamRequests" type="Panel" parent="CanvasLayer"]
+visible = false
+custom_minimum_size = Vector2(126, 3)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -126.0
+offset_bottom = 93.0
+grow_horizontal = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/TeamRequests"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/TeamRequests/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/TeamRequests/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Add player to team?"
+autowrap_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TeamRequests/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="CanvasLayer/TeamRequests/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Accept"
+
+[node name="Button2" type="Button" parent="CanvasLayer/TeamRequests/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Reject"
+
+[node name="DeathScreen" type="PanelContainer" parent="CanvasLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -75.0
+offset_right = 150.0
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/DeathScreen"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/DeathScreen/CenterContainer"]
+layout_mode = 2
+
+[node name="CenterContainer2" type="CenterContainer" parent="CanvasLayer/DeathScreen/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/DeathScreen/CenterContainer/VBoxContainer/CenterContainer2"]
+layout_mode = 2
+text = "Dead"
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/DeathScreen/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/DeathScreen/CenterContainer/VBoxContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="Respawn" type="Button" parent="CanvasLayer/DeathScreen/CenterContainer/VBoxContainer/CenterContainer/HBoxContainer"]
+layout_mode = 2
+text = "Respawn"
+
+[node name="Quit" type="Button" parent="CanvasLayer/DeathScreen/CenterContainer/VBoxContainer/CenterContainer/HBoxContainer"]
+layout_mode = 2
+text = "Quit"
+
+[node name="InventoryScreen" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Inventory" parent="CanvasLayer/InventoryScreen" instance=ExtResource("6_0csd6")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -546.0
+offset_bottom = 276.0
+grow_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/InventoryScreen"]
+layout_mode = 0
+offset_left = 151.0
+offset_right = 378.0
+offset_bottom = 66.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/InventoryScreen/VBoxContainer"]
+layout_mode = 2
+
+[node name="RequestTeam" type="LineEdit" parent="CanvasLayer/InventoryScreen/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+placeholder_text = "join team"
+expand_to_text_length = true
+
+[node name="Quit" type="Button" parent="CanvasLayer/InventoryScreen/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Quit"
+
+[node name="HostActions" type="HBoxContainer" parent="CanvasLayer/InventoryScreen/VBoxContainer"]
+layout_mode = 2
+
+[node name="ChangePassword" type="LineEdit" parent="CanvasLayer/InventoryScreen/VBoxContainer/HostActions"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+placeholder_text = "New Password"
+
+[node name="Button" type="Button" parent="CanvasLayer/InventoryScreen/VBoxContainer/HostActions"]
+layout_mode = 2
+text = "Start game"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/InventoryScreen/VBoxContainer"]
+layout_mode = 2
+
+[node name="MessageBox" type="PanelContainer" parent="CanvasLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -75.0
+offset_right = 150.0
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/MessageBox"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MessageBox/CenterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/MessageBox/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Level Starting"
+
+[node name="Button" type="Button" parent="CanvasLayer/MessageBox/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Close"
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="pressed" from="CanvasLayer/TeamRequests/MarginContainer/VBoxContainer/HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/TeamRequests/MarginContainer/VBoxContainer/HBoxContainer/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="CanvasLayer/DeathScreen/CenterContainer/VBoxContainer/CenterContainer/HBoxContainer/Respawn" to="." method="_on_respawn_pressed"]
+[connection signal="pressed" from="CanvasLayer/DeathScreen/CenterContainer/VBoxContainer/CenterContainer/HBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="text_submitted" from="CanvasLayer/InventoryScreen/VBoxContainer/HBoxContainer/RequestTeam" to="." method="_on_line_edit_text_submitted"]
+[connection signal="pressed" from="CanvasLayer/InventoryScreen/VBoxContainer/HBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="text_changed" from="CanvasLayer/InventoryScreen/VBoxContainer/HostActions/ChangePassword" to="." method="_on_line_edit_2_text_changed"]
+[connection signal="pressed" from="CanvasLayer/InventoryScreen/VBoxContainer/HostActions/Button" to="." method="startgame"]
+[connection signal="pressed" from="CanvasLayer/MessageBox/CenterContainer/VBoxContainer/Button" to="." method="close_messagebox"]
